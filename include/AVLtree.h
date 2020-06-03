@@ -11,7 +11,7 @@ struct Node
   Node* left;
   Node* right;
   Key key;
-  Node(Key k) : height(1), key(k), left(nullptr), right(nullptr) { if (k > 255) throw "Overflow height"; };
+  Node(Key k) : height(1), key(k), left(nullptr), right(nullptr) {};
 };
 #pragma pack(pop)
 
@@ -22,6 +22,7 @@ public:
   void Insert(Key key) { root = insert(root, key); };
   void Remove(Key key) { root = remove(root, key); };
   bool Search(Key key) { return searcher(root, key) != nullptr; };
+  Node<Key>* Find(Key key) { return finder(root, key); };
   void Print() { printer(root); std::cout << std::endl; };
 protected:
   Node<Key>* root = nullptr;
@@ -44,7 +45,7 @@ protected:
   Node<Key>* removemin(Node<Key>* head);
 
   Node<Key>* searcher(Node<Key>* head, Key k);
-
+  Node<Key>* finder(Node<Key>* head, Key k);
   void printer(Node<Key>* head);
 };
 
@@ -63,7 +64,7 @@ inline Node<Key>* AVLtree<Key>::insert(Node<Key>* head, Key k)
 template<typename Key>
 inline Node<Key>* AVLtree<Key>::remove(Node<Key>* head, Key k)
 {
-  if (!head) return 0;
+  if (head == nullptr) return 0;
   if (k < head->key)
     head->left = remove(head->left, k);
   else if (k > head->key)
@@ -163,6 +164,18 @@ template<typename Key>
 inline Node<Key>* AVLtree<Key>::searcher(Node<Key>* head, Key k)
 {
   if (head == nullptr) return nullptr;
+  Key key = head->key;
+  if (key == k) return head;
+  if (key > k) return searcher(head->left, k);
+  if (key < k) return searcher(head->right, k);
+}
+
+template<typename Key>
+inline Node<Key>* AVLtree<Key>::finder(Node<Key>* head, Key k)
+{
+  int keyy = 9;
+  if (head == nullptr)
+    throw "Not found";
   Key key = head->key;
   if (key == k) return head;
   if (key > k) return searcher(head->left, k);
